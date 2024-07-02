@@ -51,26 +51,42 @@ periods <- periods[-7, ]
 no_bolid_phy <- no_bolid@phylo
 no_bolid_dat <- diatom.data[diatom.data$label %in% no_bolid_phy$tip.label, ]
 
+clade_mrcas <- no_bolid_dat |>
+  dplyr::group_split(clade.color) |>
+  purrr::map_dfr(~ {
+    anc <- ape::getMRCA(no_bolid_phy, .x$label)
+    data.frame(group = unique(.x$clade.color), node = anc)
+  }) |>
+  dplyr::mutate(label = factor(dplyr::row_number()))
 
-fan_timescale_plot <- function(wes_pal = "Darjeeling1") {
-  n_cols <- length(unique(no_bolid_dat$clade.color))
-  bar_colors <- wesanderson::wes_palette(
-    name = wes_pal,
-    n = n_cols,
-    type = "continuous"
-  )
-  bar_colors <- rev(bar_colors)
+n_cols <- length(unique(no_bolid_dat$clade.color))
+bar_colors <- wesanderson::wes_palette(
+  name = "Darjeeling1",
+  n = n_cols,
+  type = "continuous"
+)
+bar_colors <- rev(bar_colors)
+bar_colors <- c("#5785c1", bar_colors[-3])
+
+
+fan_timescale_plot <- function(wes_pal = bar_colors) {
+  if (length(wes_pal) == 1 && !wes_pal %in% names(wesanderson::wes_palettes)) {
+    n_cols <- length(unique(no_bolid_dat$clade.color))
+    bar_colors <- wesanderson::wes_palette(
+      name = wes_pal,
+      n = n_cols,
+      type = "continuous"
+    )
+    bar_colors <- rev(bar_colors)
+    file_pdf <- sprintf("fan-figure/fan-timescale-%s.png", wes_pal)
+    file_png <- sprintf("fan-figure/fan-timescale-%s.pdf", wes_pal)
+  } else {
+    bar_colors <- wes_pal
+    file_pdf <- sprintf("fan-figure/fan-timescale-%s.png", "custom")
+    file_png <- sprintf("fan-figure/fan-timescale-%s.pdf", "custom")
+  }
 
   text_colors <- rev(c(rep("#FFFFFF", 4), rep("#000000", 6)))
-
-  clade_mrcas <- no_bolid_dat |>
-    dplyr::group_split(clade.color) |>
-    purrr::map_dfr(~ {
-      anc <- ape::getMRCA(no_bolid_phy, .x$label)
-      data.frame(group = unique(.x$clade.color), node = anc)
-    }) |>
-    dplyr::mutate(label = factor(dplyr::row_number())) |>
-    dplyr::mutate(clade_color = bar_colors)
 
   ##### --- plot --- #####
   p <- revts(ggtree(major_groups, aes(color = group))) +
@@ -124,9 +140,6 @@ fan_timescale_plot <- function(wes_pal = "Darjeeling1") {
       axis.title.x = ggplot2::element_text(vjust = -2, hjust = 0.25, size = 10),
     )
 
-  file_pdf <- sprintf("fan-figure/fan-timescale-%s.png", wes_pal)
-  file_png <- sprintf("fan-figure/fan-timescale-%s.pdf", wes_pal)
-
   ggplot2::ggsave(file_pdf, p, width = 10, height = 7, dpi = 300)
   ggplot2::ggsave(file_png, p, width = 10, height = 7)
 
@@ -134,6 +147,8 @@ fan_timescale_plot <- function(wes_pal = "Darjeeling1") {
   # ggplot2::ggsave("fan-timescale.svg", p, width = 10, height = 7)
 }
 
-all_wes_palettes <- names(wesanderson::wes_palettes)
+fan_timescale_plot()
 
-purrr::map(all_wes_palettes, ~ fan_timescale_plot(.x))
+# all_wes_palettes <- names(wesanderson::wes_palettes)
+
+# purrr::map(all_wes_palettes, ~ fan_timescale_plot(.x))
