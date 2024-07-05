@@ -12,14 +12,14 @@ library(purrr)
 library(wesanderson)
 
 ##### --- the tree --- #####
-diatom.tree <- treeio::read.mcmctree("fan-figure/summary-topology.nex")
+diatom.tree <- treeio::read.mcmctree("data/summary-topology.nex")
 no_bolid <- treeio::drop.tip(
   object = diatom.tree,
   tip = diatom.tree@phylo$tip.label[1]
 )
 
 ##### --- the data --- #####
-diatom.data <- readxl::read_excel("fan-figure/voucher-list.xlsx")
+diatom.data <- readxl::read_excel("data/voucher-list.xlsx")
 
 ##### --- prep for plotting --- #####
 tips_only <- diatom.data[
