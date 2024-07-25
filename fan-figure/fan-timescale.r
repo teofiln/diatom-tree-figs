@@ -10,9 +10,10 @@ library(viridis)
 library(dplyr)
 library(purrr)
 library(wesanderson)
+library(here)
 
 ##### --- the tree --- #####
-diatom.tree <- treeio::read.mcmctree("data/summary-topology.nex")
+diatom.tree <- treeio::read.mcmctree("data/summary-mean-brlens.nex")
 no_bolid <- treeio::drop.tip(
   object = diatom.tree,
   tip = diatom.tree@phylo$tip.label[1]
@@ -65,9 +66,12 @@ bar_colors <- wesanderson::wes_palette(
   n = n_cols,
   type = "continuous"
 )
+
+# manually modify a few of the colors to increase contrast of adjacent colors
 bar_colors <- rev(bar_colors)
 bar_colors <- c("#5785c1", bar_colors[-3])
-
+bar_colors[4] <- "#D37416"
+bar_colors[8] <- "#157764"
 
 fan_timescale_plot <- function(wes_pal = bar_colors) {
   if (length(wes_pal) == 1 && !wes_pal %in% names(wesanderson::wes_palettes)) {
@@ -145,9 +149,12 @@ fan_timescale_plot <- function(wes_pal = bar_colors) {
 
   # needs pkg `svglite`
   # ggplot2::ggsave("fan-timescale.svg", p, width = 10, height = 7)
+  ggplot2::ggsave("fan-figure/fan-timescale.pdf", p, width = 10, height = 7)
 }
 
 fan_timescale_plot()
+
+
 
 # all_wes_palettes <- names(wesanderson::wes_palettes)
 
