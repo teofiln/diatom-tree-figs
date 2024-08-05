@@ -51,17 +51,20 @@ group_colors[10] <- "#157764"
 # uncomment to see colors
 # "black"   "grey"    "#5785c1" "#5BBCD6" "#A1A376" "#F69100" "#F3A300" "#BCAA1E" "#50A45C" "#1C8E7A" "#8D473D" "#FF0000"
 
+time.labels <- as.character(seq(300, 0, by=-50))
+
 p1 <-
   ggtree(
     major_groups,
-    size = 0.75, aes(color = group)
+    size = 0.7, aes(color = group)
     ) +
-  geom_range("height_0.95_HPD", color = "#4361e7", size = 0.9, alpha = .7) +
+  geom_range("height_0.95_HPD", color = "#4361e7", size = 1.5, alpha = .7) +
   geom_tiplab(size = 2.5, family = "Helvetica") +
   ggplot2::scale_color_manual(values = group_colors) +
   ggplot2::scale_fill_manual(values = group_colors) +
   theme_tree2() +
-  theme(legend.position = "none") +
+  theme(legend.position = "none",
+        axis.title.x = element_text(hjust = 0.35, vjust = -0.1)) +
   xlab("Million years ago (Ma)") +
   theme(axis.line.x=element_line(), axis.line.y=element_blank()) +
   theme(panel.grid.major.x=element_line(color="darkgrey", linetype="dashed", linewidth = .4),
@@ -69,8 +72,6 @@ p1 <-
   theme(plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")) +
   scale_y_continuous(limits = c(0, 258), expand = expansion(add = c(2, 0)))
   
-time.labels <- as.character(seq(300, 0, by=-50))
-
 p2 <- revts(p1)
 p3 <- p2 + scale_x_continuous(limits = c(-300, 130), breaks = seq(-300, 0, by=50), labels = time.labels)
 
