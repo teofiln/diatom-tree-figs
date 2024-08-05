@@ -44,7 +44,7 @@ group_colors <- wesanderson::wes_palette(
   type = "continuous"
 )
 group_colors <- rev(group_colors)
-group_colors <- c("black", "grey", "#5785c1", group_colors[-3])
+group_colors <- c("darkgrey", "#5785c1", group_colors[-3])
 group_colors[6] <- "#D37416"
 group_colors[10] <- "#157764"
 
@@ -54,26 +54,28 @@ group_colors[10] <- "#157764"
 p1 <-
   ggtree(
     major_groups,
-    size = 0.4, aes(color = group)
+    size = 0.75, aes(color = group)
     ) +
-#  geom_range("height_0.95_HPD", color = "#4361e7", size = 0.75, alpha = .7) +
-  scale_y_reverse() +
-  
-  geom_tiplab(size = 2, family = "Helvetica") +
+  geom_range("height_0.95_HPD", color = "#4361e7", size = 0.9, alpha = .7) +
+  geom_tiplab(size = 2.5, family = "Helvetica") +
   ggplot2::scale_color_manual(values = group_colors) +
   ggplot2::scale_fill_manual(values = group_colors) +
   theme_tree2() +
-  theme(legend.position = "none")
-
+  theme(legend.position = "none") +
+  xlab("Million years ago (Ma)") +
+  theme(axis.line.x=element_line(), axis.line.y=element_blank()) +
+  theme(panel.grid.major.x=element_line(color="darkgrey", linetype="dashed", linewidth = .4),
+        panel.grid.major.y=element_blank()) +
+  theme(plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm")) +
+  scale_y_continuous(limits = c(0, 258), expand = expansion(add = c(2, 0)))
+  
 time.labels <- as.character(seq(300, 0, by=-50))
 
 p2 <- revts(p1)
-p3 <- p2 + scale_x_continuous(limits = c(-300, 200), breaks = seq(-300, 0, by=50), labels = time.labels)
-
-outfile = "full-tree-figure/full-tree.pdf"
+p3 <- p2 + scale_x_continuous(limits = c(-300, 130), breaks = seq(-300, 0, by=50), labels = time.labels)
 
 ggsave(
   p3,
-  file = outfile, width = 8, height = 20
+  file = "full-tree-figure/full-tree.pdf", width = 8, height = 24
 )
  
