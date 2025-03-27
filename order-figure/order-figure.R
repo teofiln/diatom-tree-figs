@@ -9,11 +9,16 @@ library(here)
 
 tree.file     <- here("data", "thal-raphid-tax0.6-pmsf.treefile")
 metadata.file <-  here("data", "tree-figs-data.xlsx")
+metadata.tree <- here("data", "tree-figs-data.xlsx")
 
 tree <- ape::read.tree(tree.file)
 
 # read in metadata for tip labels
 metadata <- read_excel(metadata.file)
+
+# read in metadata for making tree figs -- this will allow us to count orders that were
+# plotted twice, meaning they are not monophyletic
+tree.figs.metadata <- read_excel(metadata.tree)
 
 # root the tree
 rooted.tree <- root.phylo(
@@ -24,7 +29,7 @@ rooted.tree <- root.phylo(
 )
 
 # get vector of tips to drop
-drop.dat <- metadata |> dplyr::filter(cartoon.tree == "drop")
+drop.dat <- metadata |> dplyr::filter(order.tree == "drop")
 drop.vec <- drop.dat$label
 
 # drop tips
@@ -78,5 +83,5 @@ outfile = here("order-figure", "orders.pdf")
 
 ggsave(
   major_group_tree_fig,
-  file = outfile, width = 2.75, height = 8.5
+  file = outfile, width = 2.75, height = 8.73
 )

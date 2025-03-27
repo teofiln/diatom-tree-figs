@@ -92,6 +92,22 @@ fan_timescale_plot <- function(wes_pal = bar_colors) {
 
   text_colors <- rev(c(rep("#FFFFFF", 4), rep("#000000", 6)))
 
+  ##### --- define focal mediophyte nodes; will mark these on the tree --- #####
+  n1 <- getMRCA(phy=major_groups@phylo, 
+                c('Lithodesmium_intricatum_ECT2AJA-029_L217', 'Discostella_pseudostelligera_AJA075-4_R26'))
+  n2 <- getMRCA(phy=major_groups@phylo,
+                c('Toxarium_undulatum_ECT3802_L241', 'Orthoseira_roeseana_CBG002_L503'))
+  n3 <- getMRCA(phy=major_groups@phylo,
+                c('Toxarium_undulatum_ECT3802_L241', 'Lampriscus_shadboltianum_ECT2AJA-054_R71'))
+  n4 <- getMRCA(phy=major_groups@phylo,
+                c('Attheya_longicornis_ECT2AJA-053_R15', 'Terpsinoe_americana_ECT2AJA-024_L208'))
+  n5 <- getMRCA(phy=major_groups@phylo,
+                c('Toxarium_undulatum_ECT3802_L241', 'Papiliocellulus_elegans_CCMP3125_L103'))
+  n6 <- getMRCA(phy=major_groups@phylo,
+                c('Lithodesmium_intricatum_ECT2AJA-029_L217', 'Toxarium_undulatum_ECT3802_L241'))
+  n7 <- getMRCA(phy=major_groups@phylo,
+                c('Attheya_longicornis_ECT2AJA-053_R15', 'Eunotia_naegelii_FD354_L122'))
+
   ##### --- plot --- #####
   p <- revts(ggtree(major_groups, aes(color = group))) +
     coord_geo_radial(
@@ -103,6 +119,22 @@ fan_timescale_plot <- function(wes_pal = bar_colors) {
       lty = "dashed",
       lwd = 0.15,
     ) +
+
+    # thalassiosirales + lithodesmiales
+    ggtree::geom_point2(aes(subset=node==n1), size=0.8, color = "black", alpha = 0.9) +
+    # chaetocerotales + sister clade
+    ggtree::geom_point2(aes(subset=node==n2), size=0.8, color = "black", alpha = 0.9) +
+    # toxariales clade
+    ggtree::geom_point2(aes(subset=node==n3), size=0.8, color = "black", alpha = 0.9) +
+    # attheya clade
+    ggtree::geom_point2(aes(subset=node==n4), size=0.8, color = "black", alpha = 0.9) +
+    # toxariales + sister clade
+    ggtree::geom_point2(aes(subset=node==n5), size=0.8, color = "black", alpha = 0.9) +
+    # mediophytes minus attheya clade
+    ggtree::geom_point2(aes(subset=node==n6), size=0.8, color = "black", alpha = 0.9) +
+    # attheya plus pennates
+    ggtree::geom_point2(aes(subset=node==n7), size=0.8, color = "black", alpha = 0.9) +
+
     geom_range("height_0.95_HPD", color = "#4361e7", size = 0.75, alpha = .7) +
     ggtree::geom_cladelab(
       data = clade_mrcas,
@@ -143,9 +175,9 @@ fan_timescale_plot <- function(wes_pal = bar_colors) {
     ggplot2::theme(
       axis.title.x = ggplot2::element_text(vjust = -2, hjust = 0.25, size = 10),
     )
-
-  ggplot2::ggsave(file_pdf, p, width = 10, height = 7, dpi = 300)
-  ggplot2::ggsave(file_png, p, width = 10, height = 7)
+  
+  # ggplot2::ggsave(file_pdf, p, width = 10, height = 7, dpi = 300)
+  # ggplot2::ggsave(file_png, p, width = 10, height = 7)
 
   # needs pkg `svglite`
   # ggplot2::ggsave("fan-timescale.svg", p, width = 10, height = 7)

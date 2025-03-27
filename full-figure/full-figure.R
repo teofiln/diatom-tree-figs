@@ -16,6 +16,15 @@ no_bolid <- treeio::drop.tip(
   tip = diatom.tree@phylo$tip.label[1]
 )
 
+# drop non-Nagoya taxa
+no_bolid <- treeio::drop.tip(
+  object = no_bolid,
+  tip = c("Naviculoid_ECT2AJA-163_L210", "Parlibellus_cf_delognei__ECT2AJA-152_L165")
+)
+
+#[195] "Naviculoid_ECT2AJA-163_L210" 
+#[255] "Parlibellus_cf_delognei__ECT2AJA-152_L165"
+
 # read in metadata for tip labels
 diatom.data <- read_excel("data/tree-figs-data.xlsx")
 
@@ -26,22 +35,21 @@ tips_only <- diatom.data[
 major_group_info <- split(tips_only$label, tips_only$clade.color)
 major_groups <- groupOTU(no_bolid, major_group_info)
 
-n1 <- getMRCA(phy=major_groups@phylo, 
-              c('Lithodesmium_intricatum_ECT2AJA-029_L217', 'Discostella_pseudostelligera_AJA075-4_R26'))
-n2 <- getMRCA(phy=major_groups@phylo,
-              c('Toxarium_undulatum_ECT3802_L241', 'Orthoseira_roeseana_CBG002_L503'))
-n3 <- getMRCA(phy=major_groups@phylo,
-              c('Toxarium_undulatum_ECT3802_L241', 'Lampriscus_shadboltianum_ECT2AJA-054_R71'))
-n4 <- getMRCA(phy=major_groups@phylo,
-              c('Attheya_longicornis_ECT2AJA-053_R15', 'Terpsinoe_americana_ECT2AJA-024_L208'))
-n5 <- getMRCA(phy=major_groups@phylo,
-              c('Toxarium_undulatum_ECT3802_L241', 'Papiliocellulus_elegans_CCMP3125_L103'))
-n6 <- getMRCA(phy=major_groups@phylo,
-              c('Lithodesmium_intricatum_ECT2AJA-029_L217', 'Toxarium_undulatum_ECT3802_L241'))
-n7 <- getMRCA(phy=major_groups@phylo,
-              c('Attheya_longicornis_ECT2AJA-053_R15', 'Eunotia_naegelii_FD354_L122'))
-# n8 <- getMRCA(phy=major_groups@phylo,
-#               c())
+# define focal mediophyte nodes to mark on the tree
+# n1 <- getMRCA(phy=major_groups@phylo, 
+#               c('Lithodesmium_intricatum_ECT2AJA-029_L217', 'Discostella_pseudostelligera_AJA075-4_R26'))
+# n2 <- getMRCA(phy=major_groups@phylo,
+#               c('Toxarium_undulatum_ECT3802_L241', 'Orthoseira_roeseana_CBG002_L503'))
+# n3 <- getMRCA(phy=major_groups@phylo,
+#               c('Toxarium_undulatum_ECT3802_L241', 'Lampriscus_shadboltianum_ECT2AJA-054_R71'))
+# n4 <- getMRCA(phy=major_groups@phylo,
+#               c('Attheya_longicornis_ECT2AJA-053_R15', 'Terpsinoe_americana_ECT2AJA-024_L208'))
+# n5 <- getMRCA(phy=major_groups@phylo,
+#               c('Toxarium_undulatum_ECT3802_L241', 'Papiliocellulus_elegans_CCMP3125_L103'))
+# n6 <- getMRCA(phy=major_groups@phylo,
+#               c('Lithodesmium_intricatum_ECT2AJA-029_L217', 'Toxarium_undulatum_ECT3802_L241'))
+# n7 <- getMRCA(phy=major_groups@phylo,
+#               c('Attheya_longicornis_ECT2AJA-053_R15', 'Eunotia_naegelii_FD354_L122'))
 
 # create formatted tip labels
 tips_only <- tips_only %>%
@@ -63,8 +71,8 @@ group_colors <- wesanderson::wes_palette(
 )
 group_colors <- rev(group_colors)
 group_colors <- c("darkgrey", "#5785c1", group_colors[-3])
-group_colors[6] <- "#D37416"
-group_colors[10] <- "#157764"
+group_colors[5] <- "#D37416"
+group_colors[9] <- "#157764"
 
 # labels for timescale
 time.labels <- as.character(seq(300, 0, by=-25))
@@ -75,7 +83,31 @@ p1 <-
     major_groups,
     size = 0.7, aes(color = group)
     ) +
-  geom_range("height_0.95_HPD", color = "#4361e7", size = 1.5, alpha = .7) +
+  
+  # # thal + litho clade
+  # ggtree::geom_point2(aes(subset=node==n1), 
+  #                          color='black', size=3, shape = 19) +
+  # # chaetocerotales + sister clade
+  # ggtree::geom_point2(aes(subset=node==n2), 
+  #                        color='black', size=3, shape = 19) +
+  # # toxariales clade
+  # ggtree::geom_point2(aes(subset=node==n3), 
+  #                        color='black', size=3, shape = 19) +
+  # # attheya clade
+  # ggtree::geom_point2(aes(subset=node==n4), 
+  #                        color='black', size=3, shape = 19) +
+  # # toxariales + sister clade
+  # ggtree::geom_point2(aes(subset=node==n5), 
+  #                        color='black', size=3, shape = 19) +
+  # # mediophytes minus attheya clade
+  # ggtree::geom_point2(aes(subset=node==n6), 
+  #                        color='black', size=3, shape = 19) +
+  # # attheya plus pennates
+  # ggtree::geom_point2(aes(subset=node==n7), 
+  #                        color='black', size=3, shape = 19) +
+  # 
+  # geom_range("height_0.95_HPD", color = "#4361e7", size = 1.5, alpha = .7) +
+  
   geom_tiplab(size = 2.5, family = "Helvetica") +
   ggplot2::scale_color_manual(values = group_colors) +
   ggplot2::scale_fill_manual(values = group_colors) +
@@ -91,31 +123,9 @@ p1 <-
   
 p2 <- revts(p1)
 p3 <- p2 + scale_x_continuous(limits = c(-300, 100), breaks = seq(-300, 0, by=25), labels = time.labels)
-# thal + litho clade
-p4 <- p3 + geom_point2(aes(subset=node==n1), 
-                       color='black', size=3, shape = 19, position = position_nudge(x=-9))
-# chaetocerotales + sister clade
-p4 <- p4 + geom_point2(aes(subset=node==n2), 
-                       color='black', size=3, shape = 19, position = position_nudge(x=-7))
-# toxariales clade
-p4 <- p4 + geom_point2(aes(subset=node==n3), 
-                       color='black', size=3, shape = 19, position = position_nudge(x=-9))
-# attheya clade
-p4 <- p4 + geom_point2(aes(subset=node==n4), 
-                       color='black', size=3, shape = 19, position = position_nudge(x=-15))
-# toxariales + sister clade
-p4 <- p4 + geom_point2(aes(subset=node==n5), 
-                       color='black', size=3, shape = 19, position = position_nudge(x=-9))
-# mediophytes minus attheya clade
-p4 <- p4 + geom_point2(aes(subset=node==n6), 
-                       color='black', size=3, shape = 19, position = position_nudge(x=-8))
-# attheya plus pennates
-p4 <- p4 + geom_point2(aes(subset=node==n7), 
-                       color='black', size=3, shape = 19, position = position_nudge(x=-9))
-
 
 ggsave(
-  p4,
-  file = "full-figure/full-tree.pdf", width = 8, height = 25
+  p3,
+  file = "full-figure/full-tree-ex-nagoya.pdf", width = 8, height = 25
 )
 
