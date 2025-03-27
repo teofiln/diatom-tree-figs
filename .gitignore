@@ -2,3 +2,6 @@ Icon*
 .Rproj.user
 .DS_Store
 .Rhistory
+*/*.ai
+*/*.pdf
+
