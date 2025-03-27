@@ -2,6 +2,10 @@ Icon*
 .Rproj.user
 .DS_Store
 .Rhistory
-*/*.ai
-*/*.pdf
+fan-figure/*.ai
+fan-figure/*.pdf
+full-figure/*.ai
+full-figure/*.ai
+order-figure/*.pdf
+order-figure/*.ai
 
