@@ -79,7 +79,7 @@ major_group_tree_fig <-
   ggplot2::scale_color_manual(values = group_colors) +
   ggplot2::scale_fill_manual(values = group_colors)
 
-outfile = here("order-figure", "orders.pdf")
+outfile = here("order-figure", "orders.R2.pdf")
 
 ggsave(
   major_group_tree_fig,

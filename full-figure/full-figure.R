@@ -126,6 +126,6 @@ p3 <- p2 + scale_x_continuous(limits = c(-300, 100), breaks = seq(-300, 0, by=25
 
 ggsave(
   p3,
-  file = "full-figure/full-tree-ex-nagoya.pdf", width = 8, height = 25
+  file = "full-figure/full-tree.R2.pdf", width = 8, height = 25
 )
 

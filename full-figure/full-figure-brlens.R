@@ -106,6 +106,6 @@ p1 <-
   
 ggsave(
   p1,
-  file = "full-figure/full-tree-brlens-ex-nagoya.pdf", width = 8, height = 25
+  file = "full-figure/full-tree-brlens.R2.pdf", width = 8, height = 25
 )
 
